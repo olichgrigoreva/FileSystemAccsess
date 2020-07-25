@@ -5,54 +5,75 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File file = new File("veryLongFileName.txt");
-        file.createNewFile();
-        if (file.exists()) {
-            System.out.printf("File '%s' exists in the %s path!\n", file.getName(), file.toPath());
-        } else {
-            System.out.printf("File '%s' is created in the %s path!\n", file.getName(), file.toPath());
-        }
+        //заданый каталог, внутри которого будет "обход"
+        File directory = new File("data");
+        directory.mkdir();
 
-        String fileName = file.getName();
-        char[] charArray = fileName.toCharArray();
-        int charArrayLength = charArray.length;
-        final String EXTENTION = ".txt";
+        File directory1 = new File(directory.getPath(), "data1");
+        directory1.mkdir();
+        File data1File1 = new File(directory1.getPath(), "data1File1.txt");
+        data1File1.createNewFile();
+        File data1Directory11 = new File(directory1.getPath(), "data11");
+        data1Directory11.mkdir();
+        File data1Directory21 = new File(data1Directory11.getPath(), "data21");
+        data1Directory21.mkdir();
+        File data1File21 = new File(data1Directory21.getPath(), "data21File21.txt");
+        data1File21.createNewFile();
 
-        File newFile = new File("-" + fileName.substring(1, charArrayLength - 5) + EXTENTION);
-        System.out.println(newFile.getName());
+        File data1File2 = new File(directory1.getPath(), "data1File2.txt");
+        data1File2.createNewFile();
 
-        File newFile2 = new File("--" + fileName.substring(2, charArrayLength - 6) + EXTENTION);
-        System.out.println(newFile2.getName());
+        File directory2 = new File(directory.getPath(), "data2");
+        directory2.mkdir();
+        File data2File1 = new File(directory2.getPath(), "data2File1.txt");
+        data2File1.createNewFile();
 
-        File newFile3 = new File("---" + fileName.substring(3, charArrayLength - 7) + EXTENTION);
-        System.out.println(newFile3.getName());
+        File directory3 = new File(directory.getPath(), "data3");
+        directory3.mkdir();
 
-        fileNameOffset(file);
+        System.out.println("----------------список файлов------------------");
+        listFile(directory);
+        System.out.println("----------------глубина рекурсии------------------");
+        recursiveDepth(directory, 1);
+        System.out.println("--------------------удаление---------------------");
+        deleteFiles(directory);
+
     }
 
-    public static void fileNameOffset(File file) {
-        String fileName = file.getName();
-        char[] charArray = fileName.toCharArray();
-        int charArrayLength = charArray.length;
-        final String EXTENTION = ".txt";
-
-        for (int i = 0; i < charArrayLength - 4; i++) {
-            charArray[i] = '-';
-            File newFile = new File(charArray[i] + fileName.substring(1, charArrayLength - 4 + i) + EXTENTION);
-            file.renameTo(newFile);
-            //fileNameOffset(newFile);
-        }
-    }
-
-    /*public static void recursiveDelete(File root, String depth) {
+    public static void listFile(File root) {
         File[] files = root.listFiles();
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    recursiveDelete(file, depth + 1);
+                    listFile(file);
                 }
-                file.renameTo(file.getName());
+                System.out.printf("%s\n", file);
             }
         }
-    }*/
+    }
+
+    public static void recursiveDepth(File root, int depth) {
+        File[] files = root.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    recursiveDepth(file, depth + 1);
+                }
+                System.out.printf("%s %s\n", file, depth);
+            }
+        }
+    }
+
+    public static void deleteFiles(File root) {
+        File[] files = root.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteFiles(file);
+                }
+                file.delete();
+            }
+        }
+        root.delete();
+    }
 }

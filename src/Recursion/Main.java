@@ -2,7 +2,6 @@ package Recursion;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -22,7 +21,7 @@ public class Main {
         File data2File1 = new File(directory2.getPath(), "data2File1.txt");
         data2File1.createNewFile();
 
-        File directory3 = new File("data3");
+        File directory3 = new File(directory.getPath(), "data3");
         directory3.mkdir();
 
         listFile(directory);
@@ -47,7 +46,7 @@ public class Main {
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    listFile(file);
+                    deleteFiles(file);
                 }
                 file.delete();
             }
